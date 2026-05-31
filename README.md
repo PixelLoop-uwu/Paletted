@@ -70,6 +70,10 @@ name = "hyprland"
 template = "hyprland.conf.template"
 target = "~/.config/hypr/theme.conf"
 exec = [["hyprctl", "reload"], ["echo", "Goida"]]
+
+# Theme applier name without .py extension
+[[appliers]]
+applier = "hyprland"
 ```
 
 ### Theme template
