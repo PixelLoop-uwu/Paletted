@@ -5,9 +5,8 @@ from typing import Callable, Any
 from paletted.palette import ColorParser
 
 class ApplierLoader:
-  def __init__(self, color_parser: ColorParser, wallpaper_path: Path, appliers_dir: Path) -> None:
+  def __init__(self, color_parser: ColorParser, appliers_dir: Path) -> None:
     self.color_parser = color_parser
-    self.wallpaper_path = wallpaper_path
     self.appliers_dir = appliers_dir
 
   def run_custom_applier(self, applier_name: str) -> None:
@@ -31,7 +30,7 @@ class ApplierLoader:
       if applier_func is None:
         raise AttributeError(f"Function '{applier_name}' not found in file {file_path}")
 
-      applier_func(self.color_parser.parse_placeholder, self.wallpaper_path)
+      applier_func(self.color_parser.parse_placeholder)
 
     except Exception as e:
       print(f"Error executing custom applier {file_path.name}: {e}")
