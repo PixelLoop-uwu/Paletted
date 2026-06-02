@@ -34,6 +34,15 @@ class Paletted:
     StateManager().save_state(wallpaper_path, wallpaper_type)
 
     color_parser = ColorParser(palette)
+    templater = Templater()
+  
+    for pkg in config.package:
+      templater.render(self.config_loader.base_path / "templates", pkg, color_parser)
+
+      for exec in pkg.exec_commands:
+        time.sleep(0.2)
+
+        Executer.run_hook(exec)
 
     applier_loader = ApplierLoader(color_parser, self.config_loader.base_path / "appliers")
     
@@ -41,16 +50,6 @@ class Paletted:
       if not applier.applier: continue
 
       applier_loader.run_custom_applier(applier.applier)
-
-    templater = Templater()
-  
-    for pkg in config.package:
-      templater.render(self.config_loader.base_path / "templates", pkg, color_parser)
-
-      for exec in pkg.exec_commands:
-        time.sleep(0.5)
-
-        Executer.run_hook(exec)
 
     Executer.send_notification(config.notification)
 
