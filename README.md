@@ -2,6 +2,9 @@
 
 A lightweight CLI utility for dynamic theme generation. It derives color palettes from live wallpapers or images and applies them across the system through configurable templates and appliers
 
+## Preview
+![Preview](./assets/preview.gif)
+
 ## How It Works
 
 1. Extract a frame from the wallpaper (or use the image directly)
