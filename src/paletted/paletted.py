@@ -39,7 +39,7 @@ class Paletted:
 
       color_parser = ColorParser(palette)
       templater = Templater()
-    
+
       for pkg in config.package:
         templater.render(self.config_loader.base_path / "templates", pkg, color_parser)
 
@@ -49,7 +49,7 @@ class Paletted:
           Executer.run_hook(exec)
 
       applier_loader = ApplierLoader(color_parser, self.config_loader.base_path / "appliers")
-      
+
       for applier in config.appliers:
         if not applier.applier: continue
 
@@ -61,7 +61,7 @@ class Paletted:
       raise
 
     finally:
-      if not config.settings.source_image and wallpaper_type == "video":
+      if not config.settings.source_image and target_image != wallpaper_path:
         target_image.unlink(missing_ok=True)
 
   def restore_wallpaper(self) -> None:

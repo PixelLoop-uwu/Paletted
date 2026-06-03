@@ -24,6 +24,9 @@ def get_media_type(file_path: Path) -> str:
 
 
 def extract_frame(video_path: Path, image_path: Path, timestamp: str = "00:00:01") -> Path:
+  if image_path.is_symlink() or image_path.exists():
+    image_path.unlink()
+
   try:
     subprocess.run(
       [
