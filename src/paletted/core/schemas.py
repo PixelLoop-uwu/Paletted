@@ -9,7 +9,7 @@ class PackageModel(BaseModel):
 
 
 class SettingsModel(BaseModel):
-  save_frame_to: Path | None = Field(default=None)
+  source_image: Path | None = Field(default=None)
 
 
 class BackendModel(BaseModel):

@@ -18,40 +18,51 @@ class Paletted:
       raise FileNotFoundError("Wallpapers not found")
     
     config = self.config_loader.load_all()
-    image_path = None
     wallpaper_type = get_media_type(wallpaper_path)
+    target_image = Path(config.settings.source_image or "/tmp/paletted_frame.png")
     
     if wallpaper_type == "video":
-      image_path = Path(config.settings.save_frame_to or "/tmp/paletted.tmp")
-      extract_frame(wallpaper_path, image_path)
-
-      if not config.settings.save_frame_to:
-        image_path.unlink(missing_ok=True)
-
-    palette = PaletteGenerator().get_palette(image_path if image_path else wallpaper_path, source_index)
-
-    Executer.apply_wallpaper(config.backend, wallpaper_path, wallpaper_type)
-    StateManager().save_state(wallpaper_path, wallpaper_type)
-
-    color_parser = ColorParser(palette)
-    templater = Templater()
-  
-    for pkg in config.package:
-      templater.render(self.config_loader.base_path / "templates", pkg, color_parser)
-
-      for exec in pkg.exec_commands:
-        time.sleep(0.2)
-
-        Executer.run_hook(exec)
-
-    applier_loader = ApplierLoader(color_parser, self.config_loader.base_path / "appliers")
+      extract_frame(wallpaper_path, target_image)
     
-    for applier in config.appliers:
-      if not applier.applier: continue
+    else:
+      if config.settings.source_image:
+        target_image.unlink(missing_ok=True) 
+        target_image.symlink_to(wallpaper_path)
+      else:
+        target_image = wallpaper_path
 
-      applier_loader.run_custom_applier(applier.applier)
+    try:
+      palette = PaletteGenerator().get_palette(target_image, source_index)
 
-    Executer.send_notification(config.notification)
+      Executer.apply_wallpaper(config.backend, wallpaper_path, wallpaper_type)
+      StateManager().save_state(wallpaper_path, wallpaper_type)
+
+      color_parser = ColorParser(palette)
+      templater = Templater()
+    
+      for pkg in config.package:
+        templater.render(self.config_loader.base_path / "templates", pkg, color_parser)
+
+        for exec in pkg.exec_commands:
+          time.sleep(0.2)
+
+          Executer.run_hook(exec)
+
+      applier_loader = ApplierLoader(color_parser, self.config_loader.base_path / "appliers")
+      
+      for applier in config.appliers:
+        if not applier.applier: continue
+
+        applier_loader.run_custom_applier(applier.applier)
+
+      Executer.send_notification(config.notification)
+
+    except Exception:
+      raise
+
+    finally:
+      if not config.settings.source_image and wallpaper_type == "video":
+        target_image.unlink(missing_ok=True)
 
   def restore_wallpaper(self) -> None:
     config = self.config_loader.load_all()

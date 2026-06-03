@@ -31,7 +31,7 @@ paletted/
 ├── appliers/
 │   └── hyprland.py               # Custom theme applier
 ├── templates/
-│   └── hyprland.conf.template    # Example configuration template
+│   └── hyprland.lua.template     # Example configuration template
 ├── config.toml                   # Main configuration file
 └── another_config.toml           # Included configuration module
 ```
@@ -49,8 +49,8 @@ The main configuration file contains global settings, notification options, wall
 target = "./another_config.toml"
 
 [settings]
-# Path to save the extracted frame preview
-save_frame_to = "./wallpaper_preview.png"
+# Fallback static image path (extracted frame or symlink) for tools like hyprlock
+source_image = "./wallpaper.png"
 
 [notification]
 enable = true
@@ -144,13 +144,17 @@ primary             = "{inverse_primary}"
 ```
 
 Example:
-```sh
-# hyprland.conf.template
+```lua
+-- hyprland.lua.template
 
-$active_border_1 = {{on_secondary.strip}}  ->  313032
-$active_border_2 = {{outline.strip}}       ->  929095
-$inactive_border = {{surface.strip}}       ->  141314
-$shadow = {{outline.strip}}                ->  929095
+local Colors = {
+  active_1 = "{{on_secondary}}",       -- = "#362d3e"
+  active_2 = "{{outline}}",            -- = "#968e98"
+  inactive = "{{surface}}",            -- = "#151316"
+  shadow   = "{{outline.alpha(0.3)}}", -- = "#968e984c"
+}
+
+return Colors
 ```
 
 ### Custom appliers
@@ -173,7 +177,7 @@ The provided `color_parser` callable can be used to resolve any supported color 
 
 Generate and apply a theme:
 ```sh
-palleted apply /path/to/wallpaper/  # --source-index 0-1 --config-dir /path/to/paletted_configs/
+palleted apply /path/to/wallpaper/  # --source-index 0..3 (usually) --config-dir /path/to/paletted_configs/
 ```
 
 Restore the previous wallpaper:
