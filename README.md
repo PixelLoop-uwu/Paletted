@@ -10,7 +10,7 @@ A lightweight CLI utility for dynamic theme generation. It derives color palette
 1. Extract a frame from the wallpaper (or use the image directly)
 2. Generate a Material Design color palette with Matugen
 3. Apply colors to templates and appliers
-4. Execute configured commands and wallpaper backend
+4. Execute configured commands and wallpaper backend actions
 
 ## Installation
 
@@ -177,7 +177,7 @@ The provided `color_parser` callable can be used to resolve any supported color 
 
 Generate and apply a theme:
 ```sh
-palleted apply /path/to/wallpaper/  # --source-index 0..3 (usually) --config-dir /path/to/paletted_configs/
+palleted apply /path/to/wallpaper  # --source-index 0..3 (usually) --config-dir /path/to/paletted_configs/
 ```
 
 Restore the previous wallpaper:
@@ -187,4 +187,6 @@ palleted restore  # --config-dir /path/to/paletted_configs/
 
 ## Why Paletted?
 
-Unlike static themes, Paletted automatically generates a cohesive color scheme based on your wallpaper and applies it to your entire desktop environment and applications, in accordance with templates and appliers.
+Unlike traditional wallpaper-based theme generators, Paletted supports both static images and video wallpapers. It combines template-based configuration with custom Python appliers, making it possible to handle complex theming workflows that go beyond simple color substitution.
+
+Designed for highly customizable Linux desktops, Paletted can generate themes, update configurations, execute commands, and integrate with existing wallpaper backends in a single workflow.
